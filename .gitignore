@@ -13,3 +13,4 @@ build
 nuget.exe
 yarn-error.log
 yarn.lock
+.DS_Store

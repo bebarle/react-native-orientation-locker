@@ -44,7 +44,7 @@ static UIInterfaceOrientationMask _orientationMask = UIInterfaceOrientationMaskA
         _isLocking = NO;
         _disableFaceUpDown = NO;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationDidChange:) name:UIApplicationWillChangeStatusBarOrientationNotification object:nil];
         [self addListener:@"orientationDidChange"];
     }
     return self;
@@ -193,7 +193,7 @@ RCT_EXPORT_METHOD(getDeviceOrientation:(RCTResponseSenderBlock)callback)
 {
 #if (!TARGET_OS_TV)
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        UIInterfaceOrientation deviceOrientation = (UIInterfaceOrientation) [UIDevice currentDevice].orientation;
+        UIInterfaceOrientation deviceOrientation = [self getDeviceOrientation];
         NSString *orientationStr = [self getOrientationStr:deviceOrientation];
         callback(@[orientationStr]);
     }];

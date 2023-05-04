@@ -218,47 +218,47 @@ RCT_EXPORT_METHOD(lockToPortraitUpsideDown)
 #endif
 }
 
-RCT_EXPORT_METHOD(lockToLandscape)
-{
-#if DEBUG
-    NSLog(@"Locking to Landscape");
-#endif
-    
-#if (!TARGET_OS_TV)
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
-        
-        // set a flag so that no deviceOrientationDidChange events are sent to JS
-        _isLocking = YES;
-        
-        UIInterfaceOrientation deviceOrientation = _lastDeviceOrientation;
-        
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        NSString *orientationStr = [self getOrientationStr:orientation];
-        
-        // when call lockXXX, make sure to sent orientationDidChange event to JS
-        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationUnknown] forKey:@"orientation"];
-        
-        if ([orientationStr isEqualToString:@"LANDSCAPE-RIGHT"]) {
-            [Orientation setOrientation:UIInterfaceOrientationMaskLandscape];
-            [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationLandscapeLeft] forKey:@"orientation"];
-        } else {
-            [Orientation setOrientation:UIInterfaceOrientationMaskLandscape];
-            [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationLandscapeRight] forKey:@"orientation"];
-        }
-        
-        // restore device orientation
-        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: deviceOrientation] forKey:@"orientation"];
-        
-        [UIViewController attemptRotationToDeviceOrientation];
-        
-        // send a lock event
-        [self sendEventWithName:@"lockDidChange" body:@{@"orientation":@"LANDSCAPE-LEFT"}];
-        
-        _isLocking = NO;
-        
-    }];
-#endif
-}
+//RCT_EXPORT_METHOD(lockToLandscape)
+//{
+//#if DEBUG
+//    NSLog(@"Locking to Landscape");
+//#endif
+//
+//#if (!TARGET_OS_TV)
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+//
+//        // set a flag so that no deviceOrientationDidChange events are sent to JS
+//        _isLocking = YES;
+//
+//        UIInterfaceOrientation deviceOrientation = _lastDeviceOrientation;
+//
+//        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+//        NSString *orientationStr = [self getOrientationStr:orientation];
+//
+//        // when call lockXXX, make sure to sent orientationDidChange event to JS
+//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationUnknown] forKey:@"orientation"];
+//
+//        if ([orientationStr isEqualToString:@"LANDSCAPE-RIGHT"]) {
+//            [Orientation setOrientation:UIInterfaceOrientationMaskLandscape];
+//            [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationLandscapeLeft] forKey:@"orientation"];
+//        } else {
+//            [Orientation setOrientation:UIInterfaceOrientationMaskLandscape];
+//            [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: UIInterfaceOrientationLandscapeRight] forKey:@"orientation"];
+//        }
+//
+//        // restore device orientation
+//        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger: deviceOrientation] forKey:@"orientation"];
+//
+//        [UIViewController attemptRotationToDeviceOrientation];
+//
+//        // send a lock event
+//        [self sendEventWithName:@"lockDidChange" body:@{@"orientation":@"LANDSCAPE-LEFT"}];
+//
+//        _isLocking = NO;
+//
+//    }];
+//#endif
+//}
 
 RCT_EXPORT_METHOD(lockToLandscapeRight)
 {
@@ -277,6 +277,18 @@ RCT_EXPORT_METHOD(lockToLandscapeLeft)
 {
 #if DEBUG
     NSLog(@"Locking to Landscape Left");
+#endif
+#if (!TARGET_OS_TV)
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+        [self lockToOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscapeRight];
+    }];
+#endif
+}
+
+RCT_EXPORT_METHOD(lockToLandscape)
+{
+#if DEBUG
+    NSLog(@"Locking to Landscape");
 #endif
 #if (!TARGET_OS_TV)
     [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
